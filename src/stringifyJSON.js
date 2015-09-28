@@ -68,19 +68,18 @@ var stringifyJSON = function(obj) {
   }
 
  
-if (obj.constructor === Object) {
-	if (obj.length) {
-		var stringObj = [];
-		for (var key in obj) {
-			
-			stringObj.push(stringifyJSON(key) + ':' + stringifyJSON(obj[key]));	
-		}
-
-		return '{' + stringObj.join(',') + '}';
-	}
-	return '{}';
-}
-
+if(obj instanceof Object){
+   var stringObj = [];
+   for(var key in obj){
+     if (obj instanceof undefined) { 
+  	return ;
+  } 
+  if (obj instanceof Function) { 
+  	return ; 
+  }
+       stringObj.push(stringifyJSON(key) + ":" + stringifyJSON(obj[key]));
+     
+   }
+   return '{' + stringObj.join(',') + '}';
+ }
 };
-
-
