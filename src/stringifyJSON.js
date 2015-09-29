@@ -32,54 +32,33 @@ var stringifyJSON = function(obj) {
 //lets start of by writing some of our base cases. We know that there are some unstringifiable and they are
 // functions and undefined. 
 
- if (obj === null) {
-    return "null";
-  }
-
-  if (obj === undefined) { 
-  	return;
-  } 
-  if (obj.constructor === Function) { 
-  	return; 
-  }
-
-  // strings
-  if (obj.constructor === String) {
-    return '"' + obj + '"';
-  }
-
-   if (obj.constructor === Number || obj.constructor === Boolean) {
-	return "" + obj; 
-  }
-
-  // now lets see if we can iterate through our array. 
-  if (Array.isArray(obj)) {
-    if (obj.length) {
-      var stringArrays = [];
-//this is where the recursion happens. 
-      for (var i = 0; i < obj.length; i++) {
-        stringArrays.push(stringifyJSON(obj[i])); 
-      }
-
-      return '[' + stringArrays.join(",") + ']';
-    } else {
-      return '[]';
+ if(typeof obj === 'string') {
+          return '"' + obj + '"';
     }
-  }
 
- 
-if(obj instanceof Object){
-   var stringObj = [];
-   for(var key in obj){
-     if (obj instanceof undefined) { 
-  	return ;
-  } 
-  if (obj instanceof Function) { 
-  	return ; 
-  }
-       stringObj.push(stringifyJSON(key) + ":" + stringifyJSON(obj[key]));
-     
-   }
-   return '{' + stringObj.join(',') + '}';
- }
+
+// now lets see if we can iterate through our array. 
+if(Array.isArray(obj)) {
+    var stringArrays = [];
+//this is where the recursion happens. 
+    for(var i = 0; i < obj.length; i++) {
+        if(obj[i] === undefined && typeof obj[i] === 'function' ){
+            stringArrays.push(stringifyJSON(null));
+        } else {
+            stringArrays.push(stringifyJSON(obj[i]));
+        }
+    }
+
+   return '[' + stringArrays.join(',') + ']';
+}
+    if(obj && typeof obj === 'object'){
+      var stringObj = [];
+          for(var key in obj){
+            if (obj[key] !== undefined && typeof obj[key] !== 'function') { 
+               stringObj.push(stringifyJSON(key) + ":" + stringifyJSON(obj[key]));
+            }
+         }  
+         return '{' + stringObj.join(',') + '}';
+    } 
+return obj + "";
 };
